@@ -10,8 +10,22 @@ builder.Services.AddDataAccess(connectionString);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
     ?? throw new InvalidOperationException("JWT settings not configured");
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
 builder.Services.AddTokenService(jwtSettings);
 builder.Services.AddAuth(jwtSettings);
+
 
 builder.Services.AddControllers();
 builder.Services.AddCoreLogic();
@@ -25,6 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAngularApp");
 
 app.UseAuthorization();
 app.UseAuthentication();

@@ -24,7 +24,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         return 
             loginResult.Success
-            ? Ok(loginResult.Token)
+            ? Ok(new { token = loginResult.Token })
             : BadRequest(loginResult.Error);
     }
 }
