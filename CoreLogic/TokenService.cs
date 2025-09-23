@@ -9,7 +9,7 @@ namespace CoreLogic;
 
 public class TokenService(JwtSettings jwtSettings) : ITokenService
 {
-    public string GenerateJwtToken(UserWithRolesDto user)
+    public string GenerateJwtToken(User user)
     {
         var claims = new List<Claim>
         {
@@ -17,10 +17,13 @@ public class TokenService(JwtSettings jwtSettings) : ITokenService
             new Claim("username", user.Username)
         };
 
-        foreach (var role in user.Roles)
-        {
-            claims.Add(new Claim("role", role));
-        }
+        //foreach (var role in user.Roles)
+        //{
+        //    claims.Add(new Claim("role", role));
+        //}
+        var roles = user.UserRoles?.Select(ur => ur.Role.Name).ToList() ?? new List<string>();
+        claims.AddRange(roles.Select(role => new Claim("role", role)));
+
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

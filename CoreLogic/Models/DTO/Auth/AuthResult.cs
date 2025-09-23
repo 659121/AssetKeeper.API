@@ -1,14 +1,19 @@
 ﻿namespace CoreLogic.Models.DTO.Auth;
 
-public class AuthResult
+public record LoginResult(bool Success, string? Token = null, string? Message = null)
 {
-    public bool Success { get; set; }
-    public string? Token { get; set; }
-    public string? Error { get; set; }
+    public static LoginResult SuccessResult(string token)
+        => new(true, token);
 
-    public static AuthResult SuccessResult(string token)
-        => new AuthResult { Success = true, Token = token};
+    public static LoginResult FailResult(string message)
+        => new(false, Message: message);
+}
 
-    public static AuthResult FailResult(string error)
-        => new AuthResult { Success = false, Error = error };
+public record RegisterResult(bool Success, int? UserId = null, string? Message = null)
+{
+    public static RegisterResult SuccessResult(int userId, string? message = null)
+        => new(true, userId, message);
+
+    public static RegisterResult FailResult(string message)
+        => new(false, Message: message);
 }

@@ -5,33 +5,43 @@ using DataAccess.Models;
 namespace CoreLogic;
 internal class AuthService(IAuthRepository authRepository, ITokenService tokenService) : IAuthService
 {
-    public async Task RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken = default)
+    public async Task<RegisterResult> RegisterAsync(RegisterDto registerDto, CancellationToken cancellationToken = default)
     {
+        //TODO валидация реги
+        var existingUser = await authRepository.GetUserByUsernameAsync(registerDto.Username, cancellationToken);
+        if (existingUser != null)
+            return RegisterResult.FailResult("Пользователь с таким именем уже существует");
+
         string salt = BCrypt.Net.BCrypt.GenerateSalt();
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password, salt);
 
-        // TODO убрать модель бд, перевести на дто
         var user = new User
         {
             Username = registerDto.Username,
             Salt = salt,
-            PasswordHash = passwordHash
+            PasswordHash = passwordHash,
+            IsActive = true,
+            RegDate = DateTime.Now
         };
 
         await authRepository.CreateUserAsync(user, cancellationToken);
+        return RegisterResult.SuccessResult(user.Id, "Пользователь успешно зарегистрирован");
     }
 
-    public async Task<AuthResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken = default)
+    public async Task<LoginResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken = default)
     {
-        var user = await authRepository.GetUserByUsernameAsync(loginDto.Username, cancellationToken);
-        if (user is null)
-            return AuthResult.FailResult("Пользователь не найден");
+        var userEntity = await authRepository.GetUserByUsernameAsync(loginDto.Username, cancellationToken);
 
-        if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
-            return AuthResult.FailResult("Неверный пароль");
+        if (userEntity is null)
+            return LoginResult.FailResult("Пользователь с таким именем не найден");
 
-        var token = tokenService.GenerateJwtToken(user);
+        if (!userEntity.IsActive)
+            return LoginResult.FailResult("Учетная запись заблокирована");
 
-        return AuthResult.SuccessResult(token);
+        if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, userEntity.PasswordHash))
+            return LoginResult.FailResult("Неверный пароль");
+
+        var token = tokenService.GenerateJwtToken(userEntity);
+        return LoginResult.SuccessResult(token);
     }
 }

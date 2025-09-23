@@ -5,6 +5,6 @@ namespace CoreLogic;
 
 public interface ITokenService
 {
-    string GenerateJwtToken(UserWithRolesDto user);
-    //string GenerateRefreshToken();
+    string GenerateJwtToken(User user);
+    //TODO GenerateRefreshToken();
 }

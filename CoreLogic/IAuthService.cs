@@ -4,6 +4,6 @@ namespace CoreLogic;
 
 public interface IAuthService
 {
-    Task RegisterAsync(RegisterDto regDto, CancellationToken cancellationToken = default);
-    Task<AuthResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken = default);
+    Task<RegisterResult> RegisterAsync(RegisterDto regDto, CancellationToken cancellationToken = default);
+    Task<LoginResult> LoginAsync(LoginDto loginDto, CancellationToken cancellationToken = default);
 }

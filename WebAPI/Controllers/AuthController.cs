@@ -12,9 +12,12 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> RegistrationAsync([FromBody] RegisterDto registerDto)
     {
-        // TODO добавить проверку на уникальность имени
-        await authService.RegisterAsync(registerDto);
-        return Created();
+        var registerResult = await authService.RegisterAsync(registerDto);
+
+        return
+            registerResult.Success
+            ? Created()
+            : BadRequest(registerResult.Message);
     }
 
     [HttpPost("login")]
@@ -25,6 +28,6 @@ public class AuthController(IAuthService authService) : ControllerBase
         return 
             loginResult.Success
             ? Ok(new { token = loginResult.Token })
-            : BadRequest(loginResult.Error);
+            : BadRequest(loginResult.Message);
     }
 }
