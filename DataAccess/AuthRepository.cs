@@ -19,4 +19,13 @@ internal class AuthRepository(AppContext context) : IAuthRepository
             .FirstOrDefaultAsync(u => u.Username == username, cancellationToken);
         return user;
     }
+
+    public async Task UpdateUserLastLoginAsync(int userId, DateTime loginTime, CancellationToken cancellationToken = default)
+    {
+        await context.Users
+            .Where(u => u.Id == userId)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(u => u.LastLogin, loginTime),
+            cancellationToken);
+    }
 }

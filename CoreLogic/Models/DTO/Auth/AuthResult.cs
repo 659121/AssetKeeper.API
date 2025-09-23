@@ -2,8 +2,8 @@
 
 public record LoginResult(bool Success, string? Token = null, string? Message = null)
 {
-    public static LoginResult SuccessResult(string token)
-        => new(true, token);
+    public static LoginResult SuccessResult(string token, string message)
+        => new(true, token, message);
 
     public static LoginResult FailResult(string message)
         => new(false, Message: message);

@@ -41,7 +41,14 @@ internal class AuthService(IAuthRepository authRepository, ITokenService tokenSe
         if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, userEntity.PasswordHash))
             return LoginResult.FailResult("Неверный пароль");
 
+        string lastLogin = userEntity.LastLogin is not null
+            ? userEntity.LastLogin.ToString()!
+            : string.Empty;
+
+        await authRepository.UpdateUserLastLoginAsync(userEntity.Id, DateTime.UtcNow, cancellationToken);
+
         var token = tokenService.GenerateJwtToken(userEntity);
-        return LoginResult.SuccessResult(token);
+        string? v = userEntity.LastLogin.ToString();
+        return LoginResult.SuccessResult(token, lastLogin);
     }
 }
