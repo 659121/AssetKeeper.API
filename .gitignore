@@ -429,3 +429,5 @@ FodyWeavers.xsd
 
 auth.db-wal
 auth.db-shm
+WebAPI/WebAPI.http
+WebAPI/Controllers/DebugController.cs

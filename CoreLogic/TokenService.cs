@@ -14,15 +14,11 @@ public class TokenService(JwtSettings jwtSettings) : ITokenService
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim("username", user.Username)
+            new Claim(ClaimTypes.Name, user.Username)
         };
 
-        //foreach (var role in user.Roles)
-        //{
-        //    claims.Add(new Claim("role", role));
-        //}
         var roles = user.UserRoles?.Select(ur => ur.Role.Name).ToList() ?? new List<string>();
-        claims.AddRange(roles.Select(role => new Claim("role", role)));
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret));

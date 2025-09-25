@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 namespace CoreLogic;
@@ -11,6 +12,7 @@ public static class Extensions
     public static IServiceCollection AddCoreLogic(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IAuthService, AuthService>();
+        serviceCollection.AddScoped<IAdminService, AdminService>();
         return serviceCollection;
     }
 
@@ -44,19 +46,15 @@ public static class Extensions
                 ValidAudience = jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtSettings.Secret)),
-                NameClaimType = "username",
-                RoleClaimType = "role"
+                NameClaimType = ClaimTypes.Name,
+                RoleClaimType = ClaimTypes.Role
             };
         });
 
         // TODO настроить роли
-        serviceCollection.AddAuthorization(options =>
-        {
-            options.AddPolicy("RequireAdminRole", policy =>
-                policy.RequireRole("Admin"));
-            options.AddPolicy("RequireUserRole", policy =>
-                policy.RequireRole("User"));
-        });
+        serviceCollection.AddAuthorizationBuilder()
+            .AddPolicy("RequireAdminRole", policy => policy.RequireClaim("roles", "Admin"))
+            .AddPolicy("RequireUserRole", policy => policy.RequireClaim("roles", "User"));
 
         return serviceCollection;
     }

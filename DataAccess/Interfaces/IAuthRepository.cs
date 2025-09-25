@@ -1,6 +1,6 @@
 ﻿using DataAccess.Models;
 
-namespace DataAccess;
+namespace DataAccess.Interfaces;
 public interface IAuthRepository
 {
     Task CreateUserAsync(User user, CancellationToken cancellationToken = default);

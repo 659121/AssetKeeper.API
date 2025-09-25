@@ -1,5 +1,5 @@
 ﻿using CoreLogic.Models.DTO.Auth;
-using DataAccess;
+using DataAccess.Interfaces;
 using DataAccess.Models;
 
 namespace CoreLogic;
