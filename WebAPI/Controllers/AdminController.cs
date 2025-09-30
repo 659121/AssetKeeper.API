@@ -6,18 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("api/admin/users")]
+[Route("api/admin")]
 [Authorize(Roles = "Admin")]
 public class AdminController(IAdminService adminService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("users")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await adminService.GetUsersAsync();
         return Ok(users);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("users/{id}")]
     public async Task<IActionResult> GetUserDetails(int id)
     {
         var user = await adminService.GetUserDetailsAsync(id);
@@ -26,7 +26,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
             : NotFound();
     }
 
-    [HttpPatch("{id}")]
+    [HttpPatch("users/{id}")]
     public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
     {
         var result = await adminService.UpdateUserAsync(id, request);
@@ -35,12 +35,19 @@ public class AdminController(IAdminService adminService) : ControllerBase
             : NotFound();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("users/{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
         var result = await adminService.DeleteUserAsync(id);
         return result 
             ? NoContent() 
             : NotFound();
+    }
+
+    [HttpGet("roles")] // -> GET api/admin/roles
+    public async Task<IActionResult> GetRoles()
+    {
+        var roles = await adminService.GetRolesAsync();
+        return Ok(roles);
     }
 }

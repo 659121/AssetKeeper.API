@@ -1,6 +1,7 @@
 ﻿using CoreLogic.Models.DTO.Admin;
 using DataAccess.Interfaces;
 using DataAccess.Models;
+using System.Data;
 
 namespace CoreLogic;
 
@@ -51,11 +52,15 @@ internal class AdminService(IUserRepository userRepository) : IAdminService
             user.UserRoles.Clear();
 
             // Добавляем новые роли
-            var rolesToAdd = await userRepository.GetRolesListAsync(ct);
+            var allRoles = await userRepository.GetRolesListAsync(ct);
 
-            foreach (var role in rolesToAdd)
+            foreach (var roleName in request.Roles)
             {
-                user.UserRoles.Add(new UserRole { UserId = userId, RoleId = role.Id });
+                var role = allRoles.FirstOrDefault(r => r.Name == roleName);
+                if (role is not null)
+                {
+                    user.UserRoles.Add(new UserRole { UserId = userId, RoleId = role.Id });
+                }
             }
         }
 
@@ -70,5 +75,15 @@ internal class AdminService(IUserRepository userRepository) : IAdminService
 
         await userRepository.DeleteUserAsync(userId, ct);
         return true;
+    }
+
+    public async Task<List<string>> GetRolesAsync(CancellationToken ct = default)
+    {
+        List<string> rolesNameList = new();
+        foreach (var role in await userRepository.GetRolesListAsync(ct))
+        {
+            rolesNameList.Add(role.Name);
+        }
+        return rolesNameList;
     }
 }
