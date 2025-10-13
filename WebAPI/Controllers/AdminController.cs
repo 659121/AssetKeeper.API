@@ -44,7 +44,7 @@ public class AdminController(IAdminService adminService) : ControllerBase
             : NotFound();
     }
 
-    [HttpGet("roles")] // -> GET api/admin/roles
+    [HttpGet("roles")]
     public async Task<IActionResult> GetRoles()
     {
         var roles = await adminService.GetRolesAsync();

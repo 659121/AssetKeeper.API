@@ -41,8 +41,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAngularApp");
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
