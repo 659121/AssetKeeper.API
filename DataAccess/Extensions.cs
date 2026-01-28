@@ -8,7 +8,7 @@ public static class Extensions
     {
         serviceCollecton.AddScoped<IAuthRepository, AuthRepository>();
         serviceCollecton.AddScoped<IUserRepository, UserRepository>();
-        serviceCollecton.AddDbContext<AppContext>(x =>
+        serviceCollecton.AddDbContext<AuthContext>(x =>
         {
             x.UseSqlite(connectionString);
         });

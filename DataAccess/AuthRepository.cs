@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
-internal class AuthRepository(AppContext context) : IAuthRepository
+internal class AuthRepository(AuthContext context) : IAuthRepository
 {
     public async Task CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {

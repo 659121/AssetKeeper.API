@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess;
 
-internal class AppContext(DbContextOptions<AppContext> options):DbContext(options)
+internal class AuthContext(DbContextOptions<AuthContext> options):DbContext(options)
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }

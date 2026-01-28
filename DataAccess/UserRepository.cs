@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess
 {
-    internal class UserRepository(AppContext context) : IUserRepository
+    internal class UserRepository(AuthContext context) : IUserRepository
     {
         public async Task<List<User>> GetUsersWithRolesAsync(CancellationToken ct = default)
         {
