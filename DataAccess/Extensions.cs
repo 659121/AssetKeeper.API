@@ -14,4 +14,13 @@ public static class Extensions
         });
         return serviceCollecton;
     }
+
+    public static IServiceCollection AddStockDataAccess(this IServiceCollection serviceCollecton, string connectionString)
+    {
+        serviceCollecton.AddDbContext<InventoryDbContext>(x =>
+        {
+            x.UseSqlite(connectionString);
+        });
+        return serviceCollecton;
+    }
 }

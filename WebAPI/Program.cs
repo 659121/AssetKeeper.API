@@ -4,9 +4,13 @@ using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = builder.Configuration.GetConnectionString("AuthConnection")
+string authConnectionString = builder.Configuration.GetConnectionString("AuthConnection")
     ?? throw new InvalidOperationException("Auth db connection string not configured");
-builder.Services.AddDataAccess(connectionString);
+builder.Services.AddDataAccess(authConnectionString);
+
+string stockConnectionString = builder.Configuration.GetConnectionString("StocktakingConnection")
+    ?? throw new InvalidOperationException("Stocktaking db connection string not configured");
+builder.Services.AddStockDataAccess(stockConnectionString);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
     ?? throw new InvalidOperationException("JWT settings not configured");
