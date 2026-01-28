@@ -1,6 +1,8 @@
-﻿using DataAccess.Interfaces;
+﻿using CoreLogic.Interfaces;
+using DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
 namespace DataAccess;
 public static class Extensions
 {

@@ -2,9 +2,7 @@
 using CoreLogic.Models.DTO.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace WebAPI.Controllers;
-
 [ApiController]
 [Route("api/admin")]
 [Authorize(Roles = "Admin")]

@@ -4,9 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-
 namespace CoreLogic;
-
 public static class Extensions
 {
     public static IServiceCollection AddCoreLogic(this IServiceCollection serviceCollection)

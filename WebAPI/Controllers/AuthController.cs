@@ -1,18 +1,30 @@
-﻿using CoreLogic;
-using CoreLogic.Models.DTO.Auth;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using CoreLogic.Interfaces;
+using WebAPI.DTO.Auth;
 using Microsoft.AspNetCore.Mvc;
+using CoreLogic.Models.Auth;
 
 namespace WebAPI.Controllers;
-
 [ApiController]
 [Route("api/auth")]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController : ControllerBase
 {
+    private readonly IAuthService _authService;  // ← Интерфейс из домена
+
+    public AuthController(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> RegistrationAsync([FromBody] RegisterDto registerDto)
     {
-        var registerResult = await authService.RegisterAsync(registerDto);
+        var command = new RegisterCommand
+        {
+            Username = registerDto.Username,
+            Password = registerDto.Password
+        };
+        
+        var registerResult = await _authService.RegisterAsync(command);
 
         return
             registerResult.Success
@@ -23,8 +35,13 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
     {
-        var loginResult = await authService.LoginAsync(loginDto);
+        var command = new LoginCommand
+        {
+            Username = loginDto.Username,
+            Password = loginDto.Password
+        };
 
+        var loginResult = await _authService.LoginAsync(command);
         return 
             loginResult.Success
             ? Ok(new { token = loginResult.Token, lastLogin = loginResult.Message })
