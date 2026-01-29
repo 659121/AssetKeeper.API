@@ -1,9 +1,5 @@
 using CoreLogic.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
-using WebAPI.Configuration;
 using WebAPI.Services;
 
 namespace WebAPI.Extensions;

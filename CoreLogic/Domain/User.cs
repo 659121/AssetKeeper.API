@@ -1,5 +1,4 @@
-namespace CoreLogic.Domain;
-
+﻿namespace CoreLogic.Domain;
 public class User
 {
     public int Id { get; set; }
@@ -8,6 +7,6 @@ public class User
     public string Salt { get; set; } = null!;
     public bool IsActive { get; set; }
     public DateTime RegDate { get; set; }
-    public DateTime? LastLogin { get; set; }
-    public List<UserRole> UserRoles { get; set; } = new();
+    public DateTime? LastLogin {  get; set; }
+    public ICollection<UserRole> UserRoles { get; set; } = null!;
 }

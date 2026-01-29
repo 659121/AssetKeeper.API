@@ -31,26 +31,24 @@ internal class AdminService : IAdminService
         var user = await _userRepository.GetUserWithRolesByIdAsync(userId, ct);
         if (user == null) return false;
 
-        bool changesMade = false;
+        bool modified = false;
 
         // Обновление активности
         if (command.IsActive.HasValue && user.IsActive != command.IsActive.Value)
         {
             user.IsActive = command.IsActive.Value;
-            Console.WriteLine("\n123\n");
-            changesMade = true;
+            modified = true;
         }
 
         // Обновление ролей
         if (command.Roles != null)
         {
-            bool rolesUpdated = await _userRepository.UpdateUserRolesAsync(userId, command.Roles, ct);
-            if (rolesUpdated)
-                changesMade = true;
+            if (await _userRepository.UpdateUserRolesAsync(userId, command.Roles, ct))
+                modified = true;
         }
 
         // Сохраняем изменения основного пользователя (если были)
-        if (changesMade)
+        if (modified)
             await _userRepository.SaveChangesAsync(ct);
 
         return true;

@@ -1,6 +1,7 @@
-﻿using DataAccess.Entities;
+﻿using CoreLogic.Domain;
 using Microsoft.EntityFrameworkCore;
 
+namespace DataAccess.DatabaseContexts;
 internal class AuthContext(DbContextOptions<AuthContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }

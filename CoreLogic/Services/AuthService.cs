@@ -23,7 +23,6 @@ internal class AuthService : IAuthService
         string salt = BCrypt.Net.BCrypt.GenerateSalt();
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Password, salt);
 
-        // Создаём ДОМЕННУЮ сущность
         var user = new User
         {
             Username = command.Username,

@@ -1,6 +1,7 @@
-using DataAccess.Entities;
+using CoreLogic.Domain;
 using Microsoft.EntityFrameworkCore;
 
+namespace DataAccess.DatabaseContexts;
 public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : DbContext(options)
 {
     public DbSet<Device> Devices { get; set; }
