@@ -1,3 +1,5 @@
+using CoreLogic.Domain;
+
 namespace CoreLogic.Interfaces;
 public interface IMovementReasonRepository : IBaseRepository<MovementReason>
 {

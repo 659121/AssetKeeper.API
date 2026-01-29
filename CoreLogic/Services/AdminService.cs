@@ -1,87 +1,82 @@
-﻿using CoreLogic.Models.DTO.Admin;
-using DataAccess.Interfaces;
-using DataAccess.Models;
+﻿using CoreLogic.Domain;
+using CoreLogic.Interfaces;
+using CoreLogic.Models.Admin;
 using System.Data;
-namespace CoreLogic;
-internal class AdminService(IUserRepository userRepository) : IAdminService
+
+namespace CoreLogic.Services;
+internal class AdminService : IAdminService
 {
-    public async Task<List<UserListItemDto>> GetUsersAsync(CancellationToken ct = default)
-    {
-        var users = await userRepository.GetUsersWithRolesAsync(ct);
+    private readonly IUserRepository _userRepository;
 
-        return users.Select(u => new UserListItemDto(
-            u.Id,
-            u.Username,
-            u.RegDate,
-            u.LastLogin,
-            u.IsActive,
-            u.UserRoles.Select(ur => ur.Role.Name).ToList()
-        )).ToList();
+    public AdminService(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
     }
 
-    public async Task<UserDetailsDto?> GetUserDetailsAsync(int userId, CancellationToken ct = default)
+    public async Task<List<UserDetails>> GetUsersAsync(CancellationToken ct = default)
     {
-        var user = await userRepository.GetUserWithRolesByIdAsync(userId, ct);
-        if (user == null) return null;
+        var users = await _userRepository.GetUsersWithRolesAsync(ct);
 
-        return new UserDetailsDto(
-            user.Id,
-            user.Username,
-            user.RegDate,
-            user.LastLogin,
-            user.IsActive,
-            user.UserRoles.Select(ur => ur.Role.Name).ToList()
-        );
+        return users.Select(MapToUserDetails).ToList();
     }
 
-    public async Task<bool> UpdateUserAsync(int userId, UpdateUserRequest request, CancellationToken ct = default)
+    public async Task<UserDetails?> GetUserDetailsAsync(int userId, CancellationToken ct = default)
     {
-        var user = await userRepository.GetUserWithRolesByIdAsync(userId, ct);
+        var user = await _userRepository.GetUserWithRolesByIdAsync(userId, ct);
+        return user != null ? MapToUserDetails(user) : null;
+    }
+
+    public async Task<bool> UpdateUserAsync(int userId, UpdateUserCommand command, CancellationToken ct = default)
+    {
+        var user = await _userRepository.GetUserWithRolesByIdAsync(userId, ct);
         if (user == null) return false;
 
+        bool changesMade = false;
+
         // Обновление активности
-        if (request.IsActive.HasValue)
-            user.IsActive = request.IsActive.Value;
-
-        // Обновление ролей
-        if (request.Roles != null)
+        if (command.IsActive.HasValue && user.IsActive != command.IsActive.Value)
         {
-            // Удаляем текущие роли
-            user.UserRoles.Clear();
-
-            // Добавляем новые роли
-            var allRoles = await userRepository.GetRolesListAsync(ct);
-
-            foreach (var roleName in request.Roles)
-            {
-                var role = allRoles.FirstOrDefault(r => r.Name == roleName);
-                if (role is not null)
-                {
-                    user.UserRoles.Add(new UserRole { UserId = userId, RoleId = role.Id });
-                }
-            }
+            user.IsActive = command.IsActive.Value;
+            Console.WriteLine("\n123\n");
+            changesMade = true;
         }
 
-        await userRepository.UpdateUserAsync(user, ct);
+        // Обновление ролей
+        if (command.Roles != null)
+        {
+            bool rolesUpdated = await _userRepository.UpdateUserRolesAsync(userId, command.Roles, ct);
+            if (rolesUpdated)
+                changesMade = true;
+        }
+
+        // Сохраняем изменения основного пользователя (если были)
+        if (changesMade)
+            await _userRepository.SaveChangesAsync(ct);
+
         return true;
     }
 
     public async Task<bool> DeleteUserAsync(int userId, CancellationToken ct = default)
     {
-        if (!await userRepository.UserExistsAsync(userId, ct))
+        if (!await _userRepository.UserExistsAsync(userId, ct))
             return false;
 
-        await userRepository.DeleteUserAsync(userId, ct);
+        await _userRepository.DeleteUserAsync(userId, ct);
         return true;
     }
 
     public async Task<List<string>> GetRolesAsync(CancellationToken ct = default)
     {
-        List<string> rolesNameList = new();
-        foreach (var role in await userRepository.GetRolesListAsync(ct))
-        {
-            rolesNameList.Add(role.Name);
-        }
-        return rolesNameList;
+        var roles = await _userRepository.GetRolesListAsync(ct);
+        return roles.Select(r => r.Name).ToList();
     }
+
+    private static UserDetails MapToUserDetails(User user) => new(
+        user.Id,
+        user.Username,
+        user.RegDate,
+        user.LastLogin,
+        user.IsActive,
+        user.UserRoles.Select(ur => ur.Role.Name).ToList()
+    );
 }

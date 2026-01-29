@@ -1,4 +1,4 @@
-﻿namespace CoreLogic.Models.Configuration;
+﻿namespace WebAPI.Configuration;
 public class JwtSettings
 {
     public string Secret { get; set; } = null!;

@@ -1,7 +1,7 @@
 using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
-public class InventoryDbContext : DbContext
+public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : DbContext(options)
 {
     public DbSet<Device> Devices { get; set; }
     public DbSet<Department> Departments { get; set; }

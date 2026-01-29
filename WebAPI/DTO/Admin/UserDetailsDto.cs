@@ -1,4 +1,4 @@
-﻿namespace CoreLogic.Models.DTO.Admin;
+﻿namespace WebAPI.DTO.Admin;
 public record UserDetailsDto(
 int Id,
 string Username,

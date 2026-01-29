@@ -1,5 +1,5 @@
-﻿namespace CoreLogic.Models;
-public record UserDetailsDto(
+﻿namespace CoreLogic.Models.Admin;
+public record UserDetails(
 int Id,
 string Username,
 DateTime RegDate,

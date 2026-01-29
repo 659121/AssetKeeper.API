@@ -39,25 +39,25 @@ internal class AuthService : IAuthService
 
     public async Task<LoginResult> LoginAsync(LoginCommand command, CancellationToken cancellationToken = default)
     {
-        var userEntity = await _authRepository.GetUserByUsernameAsync(command.Username, cancellationToken);
+        var user = await _authRepository.GetUserByUsernameAsync(command.Username, cancellationToken);
 
-        if (userEntity is null)
+        if (user is null)
             return LoginResult.FailResult("Пользователь с таким именем не найден");
 
-        if (!userEntity.IsActive)
+        if (!user.IsActive)
             return LoginResult.FailResult("Учетная запись заблокирована");
 
-        if (!BCrypt.Net.BCrypt.Verify(command.Password, userEntity.PasswordHash))
+        if (!BCrypt.Net.BCrypt.Verify(command.Password, user.PasswordHash))
             return LoginResult.FailResult("Неверный пароль");
 
-        string lastLogin = userEntity.LastLogin is not null
-            ? userEntity.LastLogin.ToString()!
-            : string.Empty;
+        string? previousLogin = user.LastLogin?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty;
 
-        await _authRepository.UpdateUserLastLoginAsync(userEntity.Id, DateTime.UtcNow, cancellationToken);
+        // Обновляем время последнего входа
+        await _authRepository.UpdateUserLastLoginAsync(user.Id, DateTime.UtcNow, cancellationToken);
 
-        var token = _tokenService.GenerateJwtToken(userEntity);
-        string? v = userEntity.LastLogin.ToString();
-        return LoginResult.SuccessResult(token, lastLogin);
+        // Генерируем токен на основе ДОМЕННОЙ сущности
+        var token = _tokenService.GenerateJwtToken(user);
+
+        return LoginResult.SuccessResult(token, previousLogin);
     }
 }

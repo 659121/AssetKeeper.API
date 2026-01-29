@@ -1,14 +1,14 @@
 ﻿using CoreLogic.Interfaces;
+using CoreLogic.Models.Auth;
 using WebAPI.DTO.Auth;
 using Microsoft.AspNetCore.Mvc;
-using CoreLogic.Models.Auth;
 
 namespace WebAPI.Controllers;
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;  // ← Интерфейс из домена
+    private readonly IAuthService _authService;
 
     public AuthController(IAuthService authService)
     {
@@ -41,10 +41,10 @@ public class AuthController : ControllerBase
             Password = loginDto.Password
         };
 
-        var loginResult = await _authService.LoginAsync(command);
+        LoginResult loginResult = await _authService.LoginAsync(command);
         return 
             loginResult.Success
             ? Ok(new { token = loginResult.Token, lastLogin = loginResult.Message })
-            : BadRequest(loginResult.Message);
+            : BadRequest(new { loginResult.Message });
     }
 }
