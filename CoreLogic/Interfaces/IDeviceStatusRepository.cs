@@ -1,7 +1,9 @@
 using CoreLogic.Domain;
 
 namespace CoreLogic.Interfaces;
-public interface IDeviceStatusRepository : IBaseRepository<DeviceStatus>
+
+public interface IDeviceStatusRepository
 {
-    Task<DeviceStatus> GetByCodeAsync(string code);
+    Task<List<DeviceStatus>> GetAllAsync(CancellationToken ct = default);
+    Task<DeviceStatus?> GetByCodeAsync(string code, CancellationToken ct = default);
 }

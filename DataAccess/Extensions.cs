@@ -20,6 +20,12 @@ public static class Extensions
 
     public static IServiceCollection AddStockDataAccess(this IServiceCollection serviceCollecton, string connectionString)
     {
+        // Регистрация репозиториев инвентаризации
+        serviceCollecton.AddScoped<IDeviceRepository, DeviceRepository>();
+        serviceCollecton.AddScoped<IDepartmentRepository, DepartmentRepository>();
+        serviceCollecton.AddScoped<IDeviceStatusRepository, DeviceStatusRepository>();
+        serviceCollecton.AddScoped<IMovementReasonRepository, MovementReasonRepository>();
+        serviceCollecton.AddScoped<IDeviceMovementRepository, DeviceMovementRepository>();
         serviceCollecton.AddDbContext<InventoryDbContext>(x =>
         {
             x.UseSqlite(connectionString);

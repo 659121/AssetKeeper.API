@@ -1,7 +1,10 @@
 using CoreLogic.Domain;
 
 namespace CoreLogic.Interfaces;
-public interface IMovementReasonRepository : IBaseRepository<MovementReason>
+
+public interface IMovementReasonRepository
 {
-    Task<MovementReason> GetByCodeAsync(string code);
+    Task<List<MovementReason>> GetAllAsync(CancellationToken ct = default);
+    Task<MovementReason?> GetByCodeAsync(string code, CancellationToken ct = default);
+    Task<MovementReason?> GetByIdAsync(Guid id, CancellationToken ct = default);
 }

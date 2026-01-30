@@ -23,6 +23,10 @@ builder.Services.AddAuthorization(options => options.AddCustomPolicies());
 
 // Регистрация доменных сервисов
 builder.Services.AddCoreLogicServices();
+builder.Services.AddInventoryServices();
+
+// Другие сервисы
+builder.Services.AddHttpContextAccessor(); // Для получения имени пользователя в MoveDevice
 
 // CORS, контроллеры, Swagger
 builder.Services.AddCors(options =>
