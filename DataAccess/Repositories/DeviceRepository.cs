@@ -44,9 +44,11 @@ internal class DeviceRepository : IDeviceRepository
 
         if (!string.IsNullOrWhiteSpace(filter.SearchText))
         {
-            var searchText = filter.SearchText.ToLower();
+            var searchText = filter.SearchText; // ← УБРАЛИ .ToLower()
             query = query.Where(d =>
-                d.Name.ToLower().Contains(searchText));
+                EF.Functions.Like(d.Name, $"%{searchText}%") ||
+                (d.InventoryNumber != null && EF.Functions.Like(d.InventoryNumber, $"%{searchText}%")) ||
+                (d.Description != null && EF.Functions.Like(d.Description, $"%{searchText}%")));
         }
 
         query = filter.SortBy.ToLower() switch

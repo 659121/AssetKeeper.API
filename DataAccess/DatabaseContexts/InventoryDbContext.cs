@@ -46,7 +46,19 @@ public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : 
             .WithMany(d => d.Movements)
             .HasForeignKey(m => m.DeviceId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DeviceMovement>()
+            .HasOne(m => m.FromDepartment)
+            .WithMany()
+            .HasForeignKey(m => m.FromDepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
         
+        modelBuilder.Entity<DeviceMovement>()
+            .HasOne(m => m.ToDepartment)
+            .WithMany()
+            .HasForeignKey(m => m.ToDepartmentId)
+            .OnDelete(DeleteBehavior.Restrict);
+            
         modelBuilder.Entity<DeviceMovement>()
             .HasOne(m => m.Reason)
             .WithMany()

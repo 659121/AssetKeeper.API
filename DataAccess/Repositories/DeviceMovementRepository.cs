@@ -25,6 +25,14 @@ internal class DeviceMovementRepository : IDeviceMovementRepository
             .OrderByDescending(m => m.MovedAt)
             .ToListAsync(ct);
 
+        // Добавьте отладочный вывод
+        Console.WriteLine($"Found {movements.Count} movements for device {deviceId}");
+        foreach (var m in movements)
+        {
+            Console.WriteLine($"Movement ID: {m.Id}, FromDeptId: {m.FromDepartmentId}, ToDeptId: {m.ToDepartmentId}");
+            Console.WriteLine($"FromDept loaded: {m.FromDepartment != null}, ToDept loaded: {m.ToDepartment != null}");
+        }
+        
         return movements.Select(m => new DeviceMovementDto
         {
             Id = m.Id,

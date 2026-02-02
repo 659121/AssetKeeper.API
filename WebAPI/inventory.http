@@ -1,0 +1,172 @@
+@host = http://localhost:5261
+
+### 1. Login (замените на ваши учетные данные)
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Gendalf_grey",
+  "password": "password"
+}
+
+### 2. Получить все устройства (пагинация по умолчанию: страница 1, размер 20)
+GET {{host}}/api/devices
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 3. Пагинация: страница 1, размер 2
+GET {{host}}/api/devices?Page=1&PageSize=2
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 4. Пагинация: страница 2, размер 2
+GET {{host}}/api/devices?Page=2&PageSize=2
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 5. Фильтрация по отделу (IT-отдел)
+GET {{host}}/api/devices?DepartmentId=11111111-1111-1111-1111-111111111111
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 6. Фильтрация по статусу (В работе = 1)
+GET {{host}}/api/devices?StatusId=1
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 7. Поиск по тексту
+GET {{host}}/api/devices?SearchText=Dell
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 8. Сортировка по имени (по возрастанию)
+GET {{host}}/api/devices?SortBy=name&SortDescending=false
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 9. Сортировка по инвентарному номеру (по убыванию)
+GET {{host}}/api/devices?SortBy=inventory&SortDescending=true
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 10. Комбинированный запрос: фильтр + пагинация + сортировка
+GET {{host}}/api/devices?DepartmentId=11111111-1111-1111-1111-111111111111&StatusId=1&Page=1&PageSize=3&SortBy=name&SortDescending=false
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 11. Получить историю перемещений для конкретного устройства
+GET {{host}}/api/devices/d5d5d5d5-d5d5-d5d5-d5d5-d5d5d5d5d5d5/history
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить справочники
+GET {{host}}/api/reference/departments
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить справочники
+GET {{host}}/api/reference/statuses
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить справочники
+GET {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить справочники
+GET {{host}}/api/reference/statistics
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 2. Создать новое устройство
+POST {{host}}/api/devices
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Новый ноутбук Lenovo ThinkPad",
+  "inventoryNumber": "INV-006",
+  "serialNumber": "SN999888777",
+  "description": "Резервный ноутбук для новых сотрудников",
+  "currentDepartmentId": "11111111-1111-1111-1111-111111111111",
+  "currentStatusId": 1
+}
+
+### 3. Создать ещё одно устройство (без отдела)
+POST {{host}}/api/devices
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Запасной монитор Dell",
+  "inventoryNumber": "INV-007",
+  "serialNumber": "SN111222333",
+  "description": "Монитор для замены вышедших из строя",
+  "currentStatusId": 3
+}
+
+### 4. Переместить устройство в другой отдел
+# Сначала получите ID созданного устройства из ответа запроса #2
+# Замените DEVICE_ID на реальный GUID из ответа
+@deviceId = a2b2c2d2-a2b2-c2d2-a2b2-c2d2a2b2c2d2
+
+POST {{host}}/api/devices/move
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "deviceId": "{{deviceId}}",
+  "toDepartmentId": "22222222-2222-2222-2222-222222222222",
+  "reasonId": "a1b1c1d1-a1b1-c1d1-a1b1-c1d1a1b1c1d1",
+  "note": "Передача в бухгалтерию для нового сотрудника"
+}
+
+### 5. Отправить устройство в ремонт
+POST {{host}}/api/devices/move
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "deviceId": "{{deviceId}}",
+  "toDepartmentId": "11111111-1111-1111-1111-111111111111",
+  "reasonId": "a2b2c2d2-a2b2-c2d2-a2b2-c2d2a2b2c2d2",
+  "note": "Неисправность клавиатуры"
+}
+
+### 6. Проверить историю перемещений созданного устройства
+GET {{host}}/api/devices/{{deviceId}}/history
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 7. Получить обновленный список устройств
+GET {{host}}/api/devices?Page=1&PageSize=10
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 8. Обновить устройство (изменить описание)
+# Замените DEVICE_ID на реальный GUID
+PATCH {{host}}/api/devices
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "{{deviceId}}",
+  "name": "Новый ноутбук Lenovo ThinkPad X1",
+  "inventoryNumber": "INV-006",
+  "serialNumber": "SN999888777",
+  "description": "Обновленное описание: основной ноутбук для руководителя",
+  "currentDepartmentId": "22222222-2222-2222-2222-222222222222",
+  "currentStatusId": 1
+}
+
+### 9. Удалить устройство (soft delete)
+DELETE {{host}}/api/devices/{{deviceId}}
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json

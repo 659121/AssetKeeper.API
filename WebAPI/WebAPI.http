@@ -1,7 +1,8 @@
-@WebAPI_HostAddress = http://localhost:5261
+@host = http://localhost:5261
 
-### Login to get token
-POST http://localhost:5261/api/auth/login
+### 1. Login
+# @name login
+POST {{host}}/api/auth/login
 Content-Type: application/json
 
 {
@@ -9,26 +10,62 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Get user list (with token)
-GET http://localhost:5261/api/admin/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkdlbmRhbGZfZ3JleSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIlVzZXIiXSwiZXhwIjoxNzU5MTU5Mjk3LCJpc3MiOiJBc3NldEtlZXBlci5BUEkiLCJhdWQiOiJBbmd1bGFyQ2xpZW50In0.WtaP6HbknvS_R00lsJEduMFS_QSv4SeKFHbJM4x5X8E
-Accept: application/json
+### 1. Login
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "123",
+  "password": "123123"
+}
+
+### 1. Login
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "3673673567",
+  "password": "123123"
+}
+
+### 2. Get user list
+GET {{host}}/api/admin/users
+Authorization: Bearer {{login.response.body.token}}
 
 ### Get specific user
-GET http://localhost:5261/api/admin/users/2
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkdlbmRhbGZfZ3JleSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIlVzZXIiXSwiZXhwIjoxNzU5MTU5Mjk3LCJpc3MiOiJBc3NldEtlZXBlci5BUEkiLCJhdWQiOiJBbmd1bGFyQ2xpZW50In0.WtaP6HbknvS_R00lsJEduMFS_QSv4SeKFHbJM4x5X8E
-Accept: application/json
-
-### fgdfg
-GET http://localhost:5261/api/debug/user-info
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkdlbmRhbGZfZ3JleSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIlVzZXIiXSwiZXhwIjoxNzU4ODE1MjU4LCJpc3MiOiJBc3NldEtlZXBlci5BUEkiLCJhdWQiOiJBbmd1bGFyQ2xpZW50In0.sKVZ6D5e8tSPRmsraEUKp3l1ePlkZ34pi1cBLXtC-sk
-
-###
-GET http://localhost:5261/api/debug/test-auth
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkdlbmRhbGZfZ3JleSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIlVzZXIiXSwiZXhwIjoxNzU4ODE1MjU4LCJpc3MiOiJBc3NldEtlZXBlci5BUEkiLCJhdWQiOiJBbmd1bGFyQ2xpZW50In0.sKVZ6D5e8tSPRmsraEUKp3l1ePlkZ34pi1cBLXtC-sk
+GET {{host}}/api/admin/users/2
+Authorization: Bearer {{login.response.body.token}}
 Accept: application/json
 
 ###
-GET http://localhost:5261/api/admin/roles
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkdlbmRhbGZfZ3JleSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIlVzZXIiXSwiZXhwIjoxNzU5MTU5Mjk3LCJpc3MiOiJBc3NldEtlZXBlci5BUEkiLCJhdWQiOiJBbmd1bGFyQ2xpZW50In0.WtaP6HbknvS_R00lsJEduMFS_QSv4SeKFHbJM4x5X8E
+GET {{host}}/api/admin/roles
+Authorization: Bearer {{login.response.body.token}}
 Accept: application/json
+
+###
+GET {{host}}/api/reference/departments
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+###
+GET {{host}}/api/devices
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+###
+GET {{host}}/api/devices/d5d5d5d5-d5d5-d5d5-d5d5-d5d5d5d5d5d5
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 2. Update user
+PATCH {{host}}/api/admin/users/7
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isActive": true,
+  "roles": ["Admin"]
+}

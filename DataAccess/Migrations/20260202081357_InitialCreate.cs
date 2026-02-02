@@ -6,14 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_roles : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Auths");
-
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -98,21 +95,6 @@ namespace DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.CreateTable(
-                name: "Auths",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 32, nullable: false),
-                    Password = table.Column<string>(type: "TEXT", nullable: false),
-                    RegDate = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Auths", x => x.Id);
-                });
         }
     }
 }

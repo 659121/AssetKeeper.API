@@ -2,11 +2,13 @@ using CoreLogic.Models;
 using CoreLogic.Services;
 using WebAPI.DTO.Inventory;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("api/devices")]
+[Authorize(Roles = "User")]
 public class DevicesController : ControllerBase
 {
     private readonly IInventoryService _inventoryService;
