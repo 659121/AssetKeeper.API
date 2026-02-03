@@ -43,6 +43,8 @@ public class ReferenceDataController : ControllerBase
     }
 
     [HttpPost("departments")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Guid>> CreateDepartment([FromBody] CreateDepartmentRequest request, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(request.Name))

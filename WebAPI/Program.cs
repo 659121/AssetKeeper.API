@@ -1,9 +1,18 @@
 using CoreLogic.Extensions;      // ← Расширения доменного слоя
 using DataAccess;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.OpenApi;
 using WebAPI.Configuration;
-using WebAPI.Extensions;         // ← Расширения инфраструктурного слояusing DataAccess;
+using WebAPI.Extensions;         // ← Расширения инфраструктурного слоя
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = long.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+});
 
 string authConnectionString = builder.Configuration.GetConnectionString("AuthConnection")
     ?? throw new InvalidOperationException("Auth db connection string not configured");
@@ -41,14 +50,38 @@ builder.Services.AddCors(options =>
         });
 });
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "AssetKeeper API", 
+        Version = "v1" 
+    });
+    
+    // SecurityScheme - ИСПРАВЛЕНО ДЛЯ SWASHBUCKLE 10.x
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
+    });
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "AssetKeeper API v1");
+        options.RoutePrefix = "swagger";
+        options.DisplayRequestDuration();
+    });
 }
 
 app.UseCors("AllowAngularApp");

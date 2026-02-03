@@ -21,6 +21,8 @@ public class DevicesController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(DeviceDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PagedResult<DeviceDto>>> GetDevices([FromQuery] DeviceFilter filter, CancellationToken ct = default)
     {
         filter.Validate();
@@ -93,6 +95,9 @@ public class DevicesController : ControllerBase
     }
 
     [HttpPost("move")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> MoveDevice([FromBody] MoveDeviceRequest request, CancellationToken ct = default)
     {
         var username = _httpContextAccessor.HttpContext?.User.Identity?.Name ?? "system";
