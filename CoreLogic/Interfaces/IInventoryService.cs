@@ -14,6 +14,8 @@ public interface IInventoryService
     Task<List<MovementReason>> GetMovementReasonsAsync(CancellationToken ct = default);
     
     Task<Guid> CreateDeviceAsync(Device device, CancellationToken ct = default);
+    Task<Guid> CreateDepartmentAsync(Department department, CancellationToken ct = default);
+    Task<bool> CreateReasonAsync(MovementReason reason, CancellationToken ct = default);
     Task<bool> UpdateDeviceAsync(Device device, CancellationToken ct = default);
     Task<bool> DeleteDeviceAsync(Guid id, CancellationToken ct = default);
     Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? note = null, CancellationToken ct = default);

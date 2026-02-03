@@ -41,4 +41,43 @@ public class ReferenceDataController : ControllerBase
         var stats = await _inventoryService.GetDepartmentStatisticsAsync(ct);
         return Ok(stats);
     }
+
+    [HttpPost("departments")]
+    public async Task<ActionResult<Guid>> CreateDepartment([FromBody] CreateDepartmentRequest request, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name))
+            return BadRequest("Department name is required");
+
+        var department = new CoreLogic.Domain.Department
+        {
+            Code = request.Code,
+            Name = request.Name.Trim(),
+            IsActive = true
+        };
+
+        await _inventoryService.CreateDepartmentAsync(department, ct);
+
+        return CreatedAtAction(nameof(GetDepartments), new { id = department.Id }, department.Id);
+    }
+
+    [HttpPost("reasons")]
+    public async Task<ActionResult<Guid>> CreateReason([FromBody] CreateReasonRequest request, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.Code))
+            return BadRequest("Reason code is required");
+        if (string.IsNullOrWhiteSpace(request.Name))
+            return BadRequest("Reason name is required");
+        var result = await _inventoryService.CreateReasonAsync(
+            new CoreLogic.Domain.MovementReason
+            {
+                Code = request.Code.Trim(),
+                Name = request.Name.Trim(),
+                Description = request.Description?.Trim() ?? string.Empty,
+                SortOrder = request.SortOrder,
+                IsActive = true
+            },
+            ct);
+        
+        return result ? Ok() : BadRequest();
+    }
 }

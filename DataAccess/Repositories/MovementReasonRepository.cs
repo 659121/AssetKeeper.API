@@ -14,6 +14,12 @@ internal class MovementReasonRepository : IMovementReasonRepository
         _context = context;
     }
 
+    public async Task AddAsync(MovementReason reason, CancellationToken ct = default)
+    {
+        await _context.MovementReasons.AddAsync(reason, ct);
+        await _context.SaveChangesAsync(ct);
+    }
+
     public async Task<List<MovementReason>> GetAllAsync(CancellationToken ct = default)
     {
         return await _context.MovementReasons

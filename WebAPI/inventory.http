@@ -56,7 +56,7 @@ Authorization: Bearer {{login.response.body.token}}
 Accept: application/json
 
 ### 11. Получить историю перемещений для конкретного устройства
-GET {{host}}/api/devices/d5d5d5d5-d5d5-d5d5-d5d5-d5d5d5d5d5d5/history
+GET {{host}}/api/devices/dd4eff75-6067-4b50-9c12-5d99bd73114e/history
 Authorization: Bearer {{login.response.body.token}}
 Accept: application/json
 
@@ -89,7 +89,6 @@ Accept: application/json
 {
   "name": "Новый ноутбук Lenovo ThinkPad",
   "inventoryNumber": "INV-006",
-  "serialNumber": "SN999888777",
   "description": "Резервный ноутбук для новых сотрудников",
   "currentDepartmentId": "11111111-1111-1111-1111-111111111111",
   "currentStatusId": 1

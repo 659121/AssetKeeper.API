@@ -143,4 +143,47 @@ internal class InventoryService : IInventoryService
         await _deviceRepository.SaveChangesAsync(ct);
         return true;
     }
+
+    public async Task<Guid> CreateDepartmentAsync(Department department, CancellationToken ct = default)
+    {
+        department.Id = Guid.NewGuid();
+        
+        // Устанавливаем код, если не указан
+        if (department.Code == 0)
+        {
+            List<Department> departmentList = await _departmentRepository.GetAllAsync(ct);
+            if (departmentList is null || departmentList.Count == 0)
+            {
+                department.Code = 00001;
+            }
+            else
+            {
+                department.Code = departmentList.LastOrDefault()!.Code;
+            }
+        }
+
+        await _departmentRepository.AddAsync(department, ct);
+        return department.Id;
+    }
+
+    public async Task<bool> CreateReasonAsync(MovementReason reason, CancellationToken ct = default)
+    {
+        var existing = await _reasonRepository.GetAllAsync(ct);
+        if (existing.Any(r => r.Code.Equals(reason.Code, StringComparison.OrdinalIgnoreCase)))
+            return false;
+
+        var reasonAdd = new MovementReason
+        {
+            Id = Guid.NewGuid(),
+            Code = reason.Code.Trim(),
+            Name = reason.Name.Trim(),
+            Description = reason.Description?.Trim() ?? string.Empty,
+            SortOrder = reason.SortOrder,
+            IsActive = true
+        };
+
+        await _reasonRepository.AddAsync(reasonAdd, ct);
+
+        return true;
+    }
 }

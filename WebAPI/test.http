@@ -1,0 +1,65 @@
+@host = http://localhost:5261
+
+### 1. Login
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Gendalf_grey",
+  "password": "password"
+}
+
+### 2. Создать новый отдел
+POST {{host}}/api/reference/departments
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": 700,
+  "name": "Маркетинг"
+}
+
+### 12. Получить справочники
+GET {{host}}/api/reference/departments
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить справочники
+GET {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить справочники
+GET {{host}}/api/devices
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### 12. Получить history
+GET {{host}}/api/devices/dd4eff75-6067-4b50-9c12-5d99bd73114e/history
+Authorization: Bearer {{login.response.body.token}}
+Accept: application/json
+
+### Проверить перемещение
+POST {{host}}/api/devices/move
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "deviceId": "dd4eff75-6067-4b50-9c12-5d99bd73114e",
+  "toDepartmentId": "f0ff5280-f044-4fb9-b11e-c44b534b346c",
+  "reasonId": "db6fdfba-3473-408c-b91b-aaf2ff3140ac",
+  "note": "Тестовое перемещение 3"
+}
+
+### 3. Создать новую причину перемещения  
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "maintenance",
+  "name": "Плановое обслуживание",
+  "description": "Регулярное техническое обслуживание оборудования",
+  "sortOrder": 8
+}

@@ -15,6 +15,12 @@ internal class DepartmentRepository : IDepartmentRepository
         _context = context;
     }
 
+    public async Task AddAsync(Department department, CancellationToken ct = default)
+    {
+        await _context.Departments.AddAsync(department, ct);
+        await _context.SaveChangesAsync(ct);
+    }
+
     public async Task<List<Department>> GetAllAsync(CancellationToken ct = default)
     {
         return await _context.Departments
