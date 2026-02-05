@@ -61,12 +61,12 @@ internal class InventoryService : IInventoryService
         return await _reasonRepository.GetAllAsync(ct);
     }
 
-    public async Task<Guid> CreateDeviceAsync(Device device, CancellationToken ct = default)
+    public async Task<Guid> CreateDeviceAsync(Device device, string createdBy, CancellationToken ct = default)
     {
         device.Id = Guid.NewGuid();
         device.CreatedAt = DateTime.UtcNow;
         device.UpdatedAt = DateTime.UtcNow;
-        
+
         // Устанавливаем статус по умолчанию, если не указан
         if (device.CurrentStatusId == 0)
         {
@@ -74,7 +74,23 @@ internal class InventoryService : IInventoryService
             device.CurrentStatusId = activeStatus?.Id ?? 1;
         }
 
+        var creationReason = await _reasonRepository.GetByCodeAsync("creation", ct) 
+            ?? throw new InvalidOperationException("Требуется причина перемещения с кодом 'creation' в справочнике");
+        
+        var movement = new DeviceMovement
+        {
+            Id = Guid.NewGuid(),
+            DeviceId = device.Id,
+            FromDepartmentId = null,
+            ToDepartmentId = device.CurrentDepartmentId ?? Guid.Empty,
+            ReasonId = creationReason.Id,
+            MovedAt = DateTime.UtcNow,
+            MovedBy = createdBy,
+            Note = "Устройство создано"
+        };
+
         await _deviceRepository.AddAsync(device, ct);
+        await _movementRepository.AddAsync(movement, ct);
         await _deviceRepository.SaveChangesAsync(ct);
         return device.Id;
     }
@@ -84,8 +100,11 @@ internal class InventoryService : IInventoryService
         var existing = await _deviceRepository.GetByIdAsync(device.Id, ct);
         if (existing == null) return false;
 
-        device.UpdatedAt = DateTime.UtcNow;
-        await _deviceRepository.UpdateAsync(device, ct);
+        existing.Name = device.Name;
+        existing.InventoryNumber = device.InventoryNumber;
+        existing.Description = device.Description;
+        existing.UpdatedAt = DateTime.UtcNow;
+        await _deviceRepository.UpdateAsync(existing, ct);
         await _deviceRepository.SaveChangesAsync(ct);
         return true;
     }
@@ -147,7 +166,7 @@ internal class InventoryService : IInventoryService
     public async Task<Guid> CreateDepartmentAsync(Department department, CancellationToken ct = default)
     {
         department.Id = Guid.NewGuid();
-        
+
         // Устанавливаем код, если не указан
         if (department.Code == 0)
         {

@@ -159,13 +159,101 @@ Accept: application/json
   "id": "{{deviceId}}",
   "name": "Новый ноутбук Lenovo ThinkPad X1",
   "inventoryNumber": "INV-006",
-  "serialNumber": "SN999888777",
-  "description": "Обновленное описание: основной ноутбук для руководителя",
-  "currentDepartmentId": "22222222-2222-2222-2222-222222222222",
-  "currentStatusId": 1
+  "description": "Обновленное описание: основной ноутбук для руководителя"
 }
 
 ### 9. Удалить устройство (soft delete)
 DELETE {{host}}/api/devices/{{deviceId}}
 Authorization: Bearer {{login.response.body.token}}
 Accept: application/json
+
+
+### добавил причину "создание"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "creation",
+  "name": "Создание устройства",
+  "description": "Автоматическая запись при создании нового устройства",
+  "sortOrder": 0
+}
+
+
+### добавил причину "transfer"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "transfer",
+  "name": "Передача между отделами",
+  "description": "Перемещение устройства между подразделениями",
+  "sortOrder": 1
+}
+
+
+### добавил причину "repair"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "repair",
+  "name": "Отправка в ремонт",
+  "description": "Устройство отправлено на техническое обслуживание",
+  "sortOrder": 2
+}
+
+
+### добавил причину "return"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "return",
+  "name": "Возврат из ремонта",
+  "description": "Устройство возвращено после ремонта",
+  "sortOrder": 3
+}
+
+
+### добавил причину "storage"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "storage",
+  "name": "Перемещение на склад",
+  "description": "Устройство перемещено на склад временного хранения",
+  "sortOrder": 4
+}
+
+
+### добавил причину "issue"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "issue",
+  "name": "Выдача со склада",
+  "description": "Устройство выдано со склада пользователю",
+  "sortOrder": 5
+}
+
+
+### добавил причину "disposed"
+POST {{host}}/api/reference/reasons
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "code": "disposed",
+  "name": "Списание",
+  "description": "Устройство списано по истечении срока службы",
+  "sortOrder": 6
+}

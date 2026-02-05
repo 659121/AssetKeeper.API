@@ -57,6 +57,7 @@ public class DevicesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateDevice([FromBody] CreateDeviceRequest request, CancellationToken ct = default)
     {
+        var username = _httpContextAccessor.HttpContext?.User.Identity?.Name ?? "system";
         var device = new CoreLogic.Domain.Device
         {
             Name = request.Name,
@@ -66,7 +67,7 @@ public class DevicesController : ControllerBase
             CurrentStatusId = request.CurrentStatusId
         };
 
-        var id = await _inventoryService.CreateDeviceAsync(device, ct);
+        var id = await _inventoryService.CreateDeviceAsync(device, username, ct);
         return CreatedAtAction(nameof(GetDevice), new { id }, id);
     }
 
@@ -78,9 +79,7 @@ public class DevicesController : ControllerBase
             Id = request.Id,
             Name = request.Name,
             InventoryNumber = request.InventoryNumber,
-            Description = request.Description,
-            CurrentDepartmentId = request.CurrentDepartmentId,
-            CurrentStatusId = request.CurrentStatusId
+            Description = request.Description
         };
 
         var result = await _inventoryService.UpdateDeviceAsync(device, ct);
@@ -121,9 +120,9 @@ public class DevicesController : ControllerBase
             InventoryNumber = device.InventoryNumber,
             Description = device.Description,
             CurrentDepartmentId = device.CurrentDepartmentId,
-            CurrentDepartmentName = device.Movements.LastOrDefault()?.ToDepartment?.Name,
+            CurrentDepartmentName = device.CurrentDepartment?.Name ?? "unknown",
             CurrentStatusId = device.CurrentStatusId,
-            CurrentStatusName = "Unknown", // В реальном проекте нужно получить из справочника
+            CurrentStatusName = device.CurrentStatus?.Name ?? "Unknown",
             CreatedAt = device.CreatedAt,
             UpdatedAt = device.UpdatedAt,
             IsActive = device.IsActive

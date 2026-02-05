@@ -13,7 +13,7 @@ public interface IInventoryService
     Task<List<DeviceStatus>> GetDeviceStatusesAsync(CancellationToken ct = default);
     Task<List<MovementReason>> GetMovementReasonsAsync(CancellationToken ct = default);
     
-    Task<Guid> CreateDeviceAsync(Device device, CancellationToken ct = default);
+    Task<Guid> CreateDeviceAsync(Device device, string createdBy, CancellationToken ct = default);
     Task<Guid> CreateDepartmentAsync(Department department, CancellationToken ct = default);
     Task<bool> CreateReasonAsync(MovementReason reason, CancellationToken ct = default);
     Task<bool> UpdateDeviceAsync(Device device, CancellationToken ct = default);

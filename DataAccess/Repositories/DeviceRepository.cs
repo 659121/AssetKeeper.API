@@ -23,6 +23,8 @@ internal class DeviceRepository : IDeviceRepository
     public async Task<Device?> GetWithDetailsAsync(Guid id, CancellationToken ct = default)
     {
         return await _context.Devices
+            .Include(d => d.CurrentDepartment)
+            .Include(d => d.CurrentStatus)
             .Include(d => d.Movements)
             .ThenInclude(m => m.ToDepartment)
             .Include(d => d.Movements)
@@ -34,7 +36,10 @@ internal class DeviceRepository : IDeviceRepository
     {
         filter.Validate();
         var query = _context.Devices
-            .Where(d => d.IsActive);
+            .Where(d => d.IsActive)
+            .Include(d => d.CurrentDepartment)
+            .Include(d => d.CurrentStatus)
+            .AsQueryable();
 
         if (filter.DepartmentId.HasValue)
             query = query.Where(d => d.CurrentDepartmentId == filter.DepartmentId.Value);
@@ -44,7 +49,7 @@ internal class DeviceRepository : IDeviceRepository
 
         if (!string.IsNullOrWhiteSpace(filter.SearchText))
         {
-            var searchText = filter.SearchText; // ← УБРАЛИ .ToLower()
+            var searchText = filter.SearchText;
             query = query.Where(d =>
                 EF.Functions.Like(d.Name, $"%{searchText}%") ||
                 (d.InventoryNumber != null && EF.Functions.Like(d.InventoryNumber, $"%{searchText}%")) ||
