@@ -1,4 +1,5 @@
 using CoreLogic.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -43,6 +44,7 @@ public class ReferenceDataController : ControllerBase
     }
 
     [HttpPost("departments")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Guid>> CreateDepartment([FromBody] CreateDepartmentRequest request, CancellationToken ct = default)
@@ -63,6 +65,7 @@ public class ReferenceDataController : ControllerBase
     }
 
     [HttpPost("reasons")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<Guid>> CreateReason([FromBody] CreateReasonRequest request, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(request.Code))

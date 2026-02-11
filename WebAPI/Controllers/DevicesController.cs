@@ -8,7 +8,6 @@ namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("api/devices")]
-[Authorize(Roles = "User")]
 public class DevicesController : ControllerBase
 {
     private readonly IInventoryService _inventoryService;
@@ -55,6 +54,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "User")]
     public async Task<ActionResult<Guid>> CreateDevice([FromBody] CreateDeviceRequest request, CancellationToken ct = default)
     {
         var username = _httpContextAccessor.HttpContext?.User.Identity?.Name ?? "system";
@@ -72,6 +72,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> UpdateDevice([FromBody] UpdateDeviceRequest request, CancellationToken ct = default)
     {
         var device = new CoreLogic.Domain.Device
@@ -87,6 +88,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> DeleteDevice(Guid id, CancellationToken ct = default)
     {
         var result = await _inventoryService.DeleteDeviceAsync(id, ct);
@@ -94,6 +96,7 @@ public class DevicesController : ControllerBase
     }
 
     [HttpPost("move")]
+    [Authorize(Roles = "User")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
