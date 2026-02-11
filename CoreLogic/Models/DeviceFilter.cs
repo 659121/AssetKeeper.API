@@ -5,8 +5,8 @@ public class DeviceFilter
     public Guid? DepartmentId { get; set; }
     public int? StatusId { get; set; }
     public string? SearchText { get; set; }
-    public string SortBy { get; set; } = "name";
-    public bool SortDescending { get; set; } = false;
+    public string SortBy { get; set; } = "created";
+    public bool SortDescending { get; set; } = true;
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 

@@ -70,7 +70,10 @@ internal class DeviceRepository : IDeviceRepository
             "status" => filter.SortDescending 
                 ? query.OrderByDescending(d => d.CurrentStatusId) 
                 : query.OrderBy(d => d.CurrentStatusId),
-            _ => query.OrderBy(d => d.Name)
+            "created" or "createdat" => filter.SortDescending 
+                ? query.OrderByDescending(d => d.CreatedAt) 
+                : query.OrderBy(d => d.CreatedAt),
+            _ => query.OrderByDescending(d => d.CreatedAt)
         };
 
         var total = await query.CountAsync(ct);
