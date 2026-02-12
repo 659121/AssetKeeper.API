@@ -90,9 +90,9 @@ def copy_project_structure(
                     if not content.strip():  # Пропускаем пустые файлы
                         continue
                     
-                    output.append(f"\n{'='*70}")
-                    output.append(f"📁 {relative_path}")
-                    output.append(f"{'='*70}\n")
+                    output.append(f"\n{'='*20}")
+                    output.append(f"\n📁 {relative_path}")
+                    output.append(f"\n{'='*20}\n")
                     output.append(content)
                     output.append('\n\n')
                     
@@ -126,6 +126,7 @@ def copy_project_structure(
 if __name__ == '__main__':
     copy_project_structure(
         project_path='.',
+        exclude_dirs = {'bin', 'obj', '.git', '.vs', 'node_modules', 'Migrations'},
         exclude_files={'appsettings.json', 'secrets.json'},
         exclude_patterns=['*test*.cs', '*Designer.cs', '*.min.js'],
         include_exts={'.cs', '.csproj', '.sln', '.json', '.xml', '.config'}
