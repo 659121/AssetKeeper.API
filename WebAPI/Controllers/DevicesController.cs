@@ -63,6 +63,7 @@ public class DevicesController : ControllerBase
             Name = request.Name,
             InventoryNumber = request.InventoryNumber,
             Description = request.Description,
+            Sticker = request.Sticker,
             CurrentDepartmentId = request.CurrentDepartmentId,
             CurrentStatusId = request.CurrentStatusId
         };
@@ -108,6 +109,7 @@ public class DevicesController : ControllerBase
             request.ToDepartmentId, 
             request.ReasonId, 
             username, 
+            request.NewSticker,
             request.Note, 
             ct);
         
@@ -122,6 +124,7 @@ public class DevicesController : ControllerBase
             Name = device.Name,
             InventoryNumber = device.InventoryNumber,
             Description = device.Description,
+            Sticker = device.Sticker,  // Стикер
             CurrentDepartmentId = device.CurrentDepartmentId,
             CurrentDepartmentName = device.CurrentDepartment?.Name ?? "unknown",
             CurrentStatusId = device.CurrentStatusId,

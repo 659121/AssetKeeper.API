@@ -6,6 +6,7 @@ public class DeviceDto
     public string Name { get; set; } = null!;
     public string? InventoryNumber { get; set; }
     public string? Description { get; set; }
+    public int? Sticker { get; set; }
     public Guid? CurrentDepartmentId { get; set; }
     public string? CurrentDepartmentName { get; set; }
     public int CurrentStatusId { get; set; }

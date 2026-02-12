@@ -5,6 +5,7 @@ public class Device
     public required string Name { get; set; }
     public string? InventoryNumber { get; set; }
     public string? Description { get; set; }
+    public int? Sticker { get; set; }
     
     // Текущее местоположение и статус (кэш)
     public Guid? CurrentDepartmentId { get; set; }

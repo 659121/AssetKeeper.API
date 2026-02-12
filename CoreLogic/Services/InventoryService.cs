@@ -83,6 +83,8 @@ internal class InventoryService : IInventoryService
             DeviceId = device.Id,
             FromDepartmentId = null,
             ToDepartmentId = device.CurrentDepartmentId ?? Guid.Empty,
+            OldSticker = null,
+            NewSticker = device.Sticker,
             ReasonId = creationReason.Id,
             MovedAt = DateTime.UtcNow,
             MovedBy = createdBy,
@@ -119,13 +121,16 @@ internal class InventoryService : IInventoryService
         return true;
     }
 
-    public async Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? note = null, CancellationToken ct = default)
+    public async Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, int? newSticker = null, string? note = null, CancellationToken ct = default)
     {
         var device = await _deviceRepository.GetByIdAsync(deviceId, ct);
         if (device == null) return false;
 
         var reason = await _reasonRepository.GetByIdAsync(reasonId, ct);
         if (reason == null) return false;
+    
+        // Сохраняем текущий стикер для истории
+        int? oldSticker = device.Sticker;
 
         // Создаем запись в истории
         var movement = new DeviceMovement
@@ -134,6 +139,8 @@ internal class InventoryService : IInventoryService
             DeviceId = deviceId,
             FromDepartmentId = device.CurrentDepartmentId,
             ToDepartmentId = toDepartmentId,
+            OldSticker = oldSticker,
+            NewSticker = newSticker ?? oldSticker,  // Если не указан - оставляем старый
             ReasonId = reasonId,
             MovedAt = DateTime.UtcNow,
             MovedBy = movedBy,
@@ -146,6 +153,12 @@ internal class InventoryService : IInventoryService
         device.CurrentDepartmentId = toDepartmentId;
         device.UpdatedAt = DateTime.UtcNow;
 
+        // Если указан новый стикер - обновляем его
+        if (newSticker.HasValue)
+        {
+            device.Sticker = newSticker.Value;
+        }
+        
         // Автоматическое обновление статуса при определенных причинах
         if (reason.Code == "repair")
         {

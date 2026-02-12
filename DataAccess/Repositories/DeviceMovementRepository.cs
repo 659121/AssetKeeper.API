@@ -41,7 +41,9 @@ internal class DeviceMovementRepository : IDeviceMovementRepository
             ToDepartmentName = m.ToDepartment?.Name ?? string.Empty,
             ReasonName = m.Reason?.Name ?? string.Empty,
             MovedBy = m.MovedBy,
-            Note = m.Note
+            Note = m.Note,
+            OldSticker = m.OldSticker,
+            NewSticker = m.NewSticker
         }).ToList();
     }
 
