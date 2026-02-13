@@ -9,6 +9,6 @@ public class DeviceMovementDto
     public string ReasonName { get; set; } = null!;
     public string MovedBy { get; set; } = null!;
     public string? Note { get; set; }
-    public int? OldSticker { get; set; }
-    public int? NewSticker { get; set; }
+    public string? OldSticker { get; set; }
+    public string? NewSticker { get; set; }
 }

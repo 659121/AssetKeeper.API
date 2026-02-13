@@ -121,7 +121,7 @@ internal class InventoryService : IInventoryService
         return true;
     }
 
-    public async Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, int? newSticker = null, string? note = null, CancellationToken ct = default)
+    public async Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? newSticker = null, string? note = null, CancellationToken ct = default)
     {
         var device = await _deviceRepository.GetByIdAsync(deviceId, ct);
         if (device == null) return false;
@@ -130,7 +130,7 @@ internal class InventoryService : IInventoryService
         if (reason == null) return false;
     
         // Сохраняем текущий стикер для истории
-        int? oldSticker = device.Sticker;
+        string? oldSticker = device.Sticker;
 
         // Создаем запись в истории
         var movement = new DeviceMovement
@@ -154,9 +154,9 @@ internal class InventoryService : IInventoryService
         device.UpdatedAt = DateTime.UtcNow;
 
         // Если указан новый стикер - обновляем его
-        if (newSticker.HasValue)
+        if (newSticker != null)
         {
-            device.Sticker = newSticker.Value;
+            device.Sticker = newSticker;
         }
         
         // Автоматическое обновление статуса при определенных причинах
@@ -164,6 +164,21 @@ internal class InventoryService : IInventoryService
         {
             var repairStatus = await _statusRepository.GetByCodeAsync("repair", ct);
             device.CurrentStatusId = repairStatus?.Id ?? device.CurrentStatusId;
+        }
+        else if (reason.Code == "return")
+        {
+            var disposedStatus = await _statusRepository.GetByCodeAsync("active", ct);
+            device.CurrentStatusId = disposedStatus?.Id ?? device.CurrentStatusId;
+        }
+        else if (reason.Code == "storage")
+        {
+            var disposedStatus = await _statusRepository.GetByCodeAsync("storage", ct);
+            device.CurrentStatusId = disposedStatus?.Id ?? device.CurrentStatusId;
+        }
+        else if (reason.Code == "issue")
+        {
+            var disposedStatus = await _statusRepository.GetByCodeAsync("active", ct);
+            device.CurrentStatusId = disposedStatus?.Id ?? device.CurrentStatusId;
         }
         else if (reason.Code == "disposed")
         {

@@ -124,7 +124,7 @@ public class DevicesController : ControllerBase
             Name = device.Name,
             InventoryNumber = device.InventoryNumber,
             Description = device.Description,
-            Sticker = device.Sticker,  // Стикер
+            Sticker = device.Sticker,
             CurrentDepartmentId = device.CurrentDepartmentId,
             CurrentDepartmentName = device.CurrentDepartment?.Name ?? "unknown",
             CurrentStatusId = device.CurrentStatusId,

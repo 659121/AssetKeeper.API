@@ -7,5 +7,5 @@ public class CreateDeviceRequest
     public string? Description { get; set; }
     public Guid? CurrentDepartmentId { get; set; }
     public int CurrentStatusId { get; set; }
-    public int Sticker { get; set; }
+    public string? Sticker { get; set; }
 }

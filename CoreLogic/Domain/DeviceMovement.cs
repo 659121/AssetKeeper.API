@@ -11,8 +11,8 @@ public class DeviceMovement
     public Guid ToDepartmentId { get; set; }
     public Department? ToDepartment { get; set; }
     
-    public int? OldSticker { get; set; }
-    public int? NewSticker { get; set; }
+    public string? OldSticker { get; set; }
+    public string? NewSticker { get; set; }
     
     public Guid ReasonId { get; set; }
     public MovementReason? Reason { get; set; }
