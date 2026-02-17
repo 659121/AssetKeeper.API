@@ -53,6 +53,8 @@ internal class DeviceRepository : IDeviceRepository
             query = query.Where(d =>
                 EF.Functions.Like(d.Name, $"%{searchText}%") ||
                 (d.InventoryNumber != null && EF.Functions.Like(d.InventoryNumber, $"%{searchText}%")) ||
+                (d.SerialNumber != null && EF.Functions.Like(d.SerialNumber, $"%{searchText}%")) ||
+                (d.Sticker != null && EF.Functions.Like(d.Sticker, $"%{searchText}%")) ||
                 (d.Description != null && EF.Functions.Like(d.Description, $"%{searchText}%")));
         }
 

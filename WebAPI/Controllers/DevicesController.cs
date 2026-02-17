@@ -62,6 +62,7 @@ public class DevicesController : ControllerBase
         {
             Name = request.Name,
             InventoryNumber = request.InventoryNumber,
+            SerialNumber = request.SerialNumber,
             Description = request.Description,
             Sticker = request.Sticker,
             CurrentDepartmentId = request.CurrentDepartmentId,
@@ -123,6 +124,7 @@ public class DevicesController : ControllerBase
             Id = device.Id,
             Name = device.Name,
             InventoryNumber = device.InventoryNumber,
+            SerialNumber = device.SerialNumber,
             Description = device.Description,
             Sticker = device.Sticker,
             CurrentDepartmentId = device.CurrentDepartmentId,

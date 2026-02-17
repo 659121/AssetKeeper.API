@@ -23,6 +23,9 @@ public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : 
             .HasIndex(d => d.InventoryNumber);
 
         modelBuilder.Entity<Device>()
+            .HasIndex(d => d.SerialNumber);
+
+        modelBuilder.Entity<Device>()
             .HasIndex(d => d.Sticker);
         
         modelBuilder.Entity<DeviceMovement>()
