@@ -88,6 +88,7 @@ internal class InventoryService : IInventoryService
             ReasonId = creationReason.Id,
             MovedAt = DateTime.UtcNow,
             MovedBy = createdBy,
+            Representative = null,
             Note = "Устройство создано"
         };
 
@@ -121,7 +122,7 @@ internal class InventoryService : IInventoryService
         return true;
     }
 
-    public async Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? newSticker = null, string? note = null, CancellationToken ct = default)
+    public async Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? newSticker = null, string? note = null, string? representative = null, CancellationToken ct = default)
     {
         var device = await _deviceRepository.GetByIdAsync(deviceId, ct);
         if (device == null) return false;
@@ -144,6 +145,7 @@ internal class InventoryService : IInventoryService
             ReasonId = reasonId,
             MovedAt = DateTime.UtcNow,
             MovedBy = movedBy,
+            Representative = representative,
             Note = note
         };
 

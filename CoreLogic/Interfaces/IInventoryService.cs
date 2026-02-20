@@ -18,5 +18,5 @@ public interface IInventoryService
     Task<bool> CreateReasonAsync(MovementReason reason, CancellationToken ct = default);
     Task<bool> UpdateDeviceAsync(Device device, CancellationToken ct = default);
     Task<bool> DeleteDeviceAsync(Guid id, CancellationToken ct = default);
-    Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? newSticker = null, string? note = null, CancellationToken ct = default);
+    Task<bool> MoveDeviceAsync(Guid deviceId, Guid toDepartmentId, Guid reasonId, string movedBy, string? newSticker = null, string? note = null, string? representative = null, CancellationToken ct = default);
 }

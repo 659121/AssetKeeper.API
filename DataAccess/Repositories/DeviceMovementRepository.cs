@@ -34,6 +34,7 @@ internal class DeviceMovementRepository : IDeviceMovementRepository
             ReasonCode = m.Reason?.Code ?? string.Empty,
             ReasonName = m.Reason?.Name ?? string.Empty,
             MovedBy = m.MovedBy,
+            Representative = m.Representative,
             Note = m.Note,
             OldSticker = m.OldSticker,
             NewSticker = m.NewSticker

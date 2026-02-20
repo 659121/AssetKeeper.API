@@ -19,5 +19,6 @@ public class DeviceMovement
     
     public DateTime MovedAt { get; set; }
     public required string MovedBy { get; set; }
+    public string? Representative { get; set; }
     public string? Note { get; set; }
 }

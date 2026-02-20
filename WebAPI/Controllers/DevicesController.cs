@@ -110,6 +110,7 @@ public class DevicesController : ControllerBase
             request.ToDepartmentId, 
             request.ReasonId, 
             username, 
+            request.Representative,
             request.NewSticker,
             request.Note, 
             ct);

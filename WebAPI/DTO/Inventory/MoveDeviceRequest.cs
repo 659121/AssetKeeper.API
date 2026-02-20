@@ -7,4 +7,5 @@ public class MoveDeviceRequest
     public Guid ReasonId { get; set; }
     public string? NewSticker { get; set; }
     public string? Note { get; set; }
+    public string? Representative { get; set; }
 }
