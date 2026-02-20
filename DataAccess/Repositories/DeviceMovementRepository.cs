@@ -24,14 +24,6 @@ internal class DeviceMovementRepository : IDeviceMovementRepository
             .Include(m => m.Reason)
             .OrderByDescending(m => m.MovedAt)
             .ToListAsync(ct);
-
-        // Добавьте отладочный вывод
-        Console.WriteLine($"Found {movements.Count} movements for device {deviceId}");
-        foreach (var m in movements)
-        {
-            Console.WriteLine($"Movement ID: {m.Id}, FromDeptId: {m.FromDepartmentId}, ToDeptId: {m.ToDepartmentId}");
-            Console.WriteLine($"FromDept loaded: {m.FromDepartment != null}, ToDept loaded: {m.ToDepartment != null}");
-        }
         
         return movements.Select(m => new DeviceMovementDto
         {
@@ -39,6 +31,7 @@ internal class DeviceMovementRepository : IDeviceMovementRepository
             MovedAt = m.MovedAt,
             FromDepartmentName = m.FromDepartment?.Name,
             ToDepartmentName = m.ToDepartment?.Name ?? string.Empty,
+            ReasonCode = m.Reason?.Code ?? string.Empty,
             ReasonName = m.Reason?.Name ?? string.Empty,
             MovedBy = m.MovedBy,
             Note = m.Note,

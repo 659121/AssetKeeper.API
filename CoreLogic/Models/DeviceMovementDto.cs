@@ -6,6 +6,7 @@ public class DeviceMovementDto
     public DateTime MovedAt { get; set; }
     public string? FromDepartmentName { get; set; }
     public string ToDepartmentName { get; set; } = null!;
+    public string? ReasonCode { get; set; }
     public string ReasonName { get; set; } = null!;
     public string MovedBy { get; set; } = null!;
     public string? Note { get; set; }
